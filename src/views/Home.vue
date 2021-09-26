@@ -1,7 +1,8 @@
 <template>
   <div>
     <h1>Topkelook characters</h1>
-    <router-link v-for="(character, index) of characters" :key="index" :to="{name: 'Character', params: character}">
+    <SearchBar @change="updateSearchCriterion"/>
+    <router-link v-for="(character, index) of characters" :key="index" :to="{name: 'Character', params: character}" v-show="match(searchCriterion, character.name)">
       <card :character="character"/>
     </router-link>
   </div>
@@ -9,10 +10,14 @@
 
 <script>
 import Card from '../components/Card'
+import SearchBar from '../components/SearchBar'
 
 export default {
   name: 'App',
   data() {
+    return {
+      searchCriterion: ""
+    }
   },
   computed: {
     characters() {
@@ -52,7 +57,16 @@ export default {
     }
   },
   components: {
-    Card
+    Card,
+    SearchBar
+  },
+  methods: {
+    match(criterion, name) {
+      return name.toLowerCase().includes(criterion.toLowerCase());
+    },
+    updateSearchCriterion(newVal) {
+      this.searchCriterion = newVal;
+    }
   }
 }
 </script>

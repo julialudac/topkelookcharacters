@@ -28,3 +28,9 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+img {
+  border: solid blue 5px;
+}
+</style>
