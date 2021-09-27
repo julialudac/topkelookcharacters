@@ -8,29 +8,28 @@
     <p>Attack: {{character.attack}}</p>
     <p>Defense: {{character.defense}}</p>
     <p>Speed: {{character.speed}}</p>
-    <h2>Gallery</h2>
-    <img v-for="i in parseInt(character.nbpictures)" :key=i :src="require(`../assets/gallery/${character.name.toLowerCase()}_gal_${i}.png`)" alt="">
+    <Gallery :character="character"/>
   </div>
 </template>
 
 <script>
 import Card from '../components/Card'
+import Gallery from '../components/charactersData/Gallery'
 
 export default {
   name: "CharacterDetails",
   components: {
-    Card
+    Card,
+    Gallery
+  },
+  props: {
+    name: String
   },
   computed: {
     character() {
-      return this.$route.params;
+      return this.$store.getters.getCharacters.find(c => c.name == this.name);
     }
-  }
+  },
+  
 }
 </script>
-
-<style scoped>
-img {
-  border: solid blue 5px;
-}
-</style>
