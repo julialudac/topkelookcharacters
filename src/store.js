@@ -11,6 +11,18 @@ let store = createStore({
         attack: 1,
         defense: 1,
         speed: 3,
+        moves: [
+          {
+            name: "Waste throw",
+            damage: 1,
+            cost: 0
+          },
+          {
+            name: "Trash Can lid strike",
+            damage: 1,
+            cost: 0
+          }
+        ],
         nbpictures: 3
       },
       {
@@ -21,6 +33,18 @@ let store = createStore({
         attack: 1,
         defense: 70,
         speed: 3,
+        moves: [
+          {
+            name: "Trash Can lid strike",
+            damage: 1,
+            cost: 0
+          },
+          {
+            name: "Catch",
+            damage: 3,
+            cost: 0
+          }
+        ],
         nbpictures: 0
       },
       {
@@ -31,6 +55,13 @@ let store = createStore({
         attack: 3,
         defense: 3,
         speed: 80,
+        moves: [
+          {
+            name: "Spider bite",
+            damage: 2,
+            cost: 0
+          },
+        ],
         nbpictures: 0
       }
     ]

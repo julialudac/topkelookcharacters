@@ -2,12 +2,8 @@
   <div>
     <router-link to="/">Home</router-link> <br/>
     <card :character="character"/>
-    <p>{{character.description}}</p>
-    <p>HP: {{character.HP}}</p>
-    <p>Spell points: {{character.spellpoints}}</p>
-    <p>Attack: {{character.attack}}</p>
-    <p>Defense: {{character.defense}}</p>
-    <p>Speed: {{character.speed}}</p>
+    <Stats :character="character"/>
+    <Moves :moves="character.moves"/>
     <Gallery :character="character"/>
   </div>
 </template>
@@ -15,12 +11,16 @@
 <script>
 import Card from '../components/Card'
 import Gallery from '../components/charactersData/Gallery'
+import Stats from '../components/charactersData/Stats'
+import Moves from '../components/charactersData/Moves'
 
 export default {
   name: "CharacterDetails",
   components: {
     Card,
-    Gallery
+    Gallery,
+    Stats,
+    Moves
   },
   props: {
     name: String
