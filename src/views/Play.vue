@@ -1,26 +1,43 @@
 <template>
   <div>
-    <!-- 1/ Choose your character -->
-    <div v-show="Object.entries(playerCharacter).length === 0">
-      <p> Choose your character: </p>
-      <select name="player" v-model="playerCharacterName">
-        <option v-for="(character, index) of characters" :key="index" :value="character.name">{{character.name}}</option>
-      </select>
-    <button @click="selectCharacters">OK!</button>
-    </div>
-    <!-- 2/ Display player's character and ennemy's character + OK-->
-    <div v-show="Object.entries(playerCharacter).length > 0">
-      <p>You have chosen {{playerCharacter.name}}. The opponent choses {{opponentCharacter.name}}. </p>
-      <button>Start Battle</button>
+    <router-link to='/'>Home</router-link>
+
+    <!-- Characters selection -->
+    <charactersSelection v-if="!battleStarted" @characters-are-selected="fillCharactersAndStartsBattle"/>
+
+    <!-- Battle!!! -->
+    <div v-if="battleStarted">
+      <currentStats :character="playerCharacter" :label="'YOU'"/>
+      <div class="board">
+        <h1>VS</h1>
+        <!-- I could also have used a form and submit button to group this -->
+        <div v-show="!battleEnded">
+          Your move: 
+          <select name="playerMove" v-model="chosenMoveName">
+            <option v-for="(move, index) of playerCharacter.moves" :key="index" :value="move.name">{{move.name}}</option>
+          </select>
+          <button @click="attack">Confirm</button>
+        </div>
+        <!-- Battle Story -->
+        <div class='scroll' v-html="battleStory">
+        </div>
+      </div>
+      <currentStats :character="opponentCharacter" :label="'OPPONENT'"/>
     </div>
   </div>
 </template>
 
 <script>
+import CharactersSelection from "../components/CharactersSelection"
+import CurrentStats from "../components/battleData/CurrentStats"
 
 export default {
   name: "Play",
   props: {
+  },
+  components: {
+    CharactersSelection,
+    CurrentStats
   },
   computed: {
     characters() {
@@ -29,26 +46,43 @@ export default {
   },
   data() {
     return {
-      playerCharacterName: this.$store.getters.getCharacters[0].name,
       playerCharacter: {},
-      opponentCharacter: {}
+      opponentCharacter: {},
+      battleStarted: false,
+      battleStory: "",
+      chosenMoveName: "",
+      battleEnded: false
     }
   },
   methods: {
-    selectCharacters() {
-      let playerIndex = 0;
-      const characters = this.$store.getters.getCharacters;
-      for (let i in characters) {
-        if (characters[i].name == this.playerCharacterName) {
-          this.playerCharacter = characters[i];
-          playerIndex = i;
-          break;
-        }
-      }
-      this.opponentCharacter = characters[parseInt(playerIndex+1) % characters.length];
+    fillCharactersAndStartsBattle(selectedCharacters) {
+      this.playerCharacter = selectedCharacters.playerCharacter;
+      this.chosenMoveName = this.playerCharacter.moves[0].name;
+      this.opponentCharacter = selectedCharacters.opponentCharacter;
+      this.battleStarted = true;
     },
-    isSelected(character) {
-      return character.name == this.playerCharacter.name;
+    attack() {   
+      // player's turn
+      const chosenMove = this.playerCharacter.moves.find(move => move.name === this.chosenMoveName);
+      this.battleStory += `<strong>${this.playerCharacter.name}</strong> attacks <strong>${this.opponentCharacter.name}</strong> with <em>${chosenMove.name}</em>. `;
+      this.battleStory += `${chosenMove.damage} point of damage. </br>`;
+      this.opponentCharacter.HP -= chosenMove.damage;
+      if (this.opponentCharacter.HP <= 0) {
+        this.opponentCharacter.HP = 0;
+        this.battleStory += '<strong>Player won</strong>!!! </br>'
+        this.battleEnded = true;
+      } else {
+        // opponent's turn
+        const opponentMove = this.opponentCharacter.moves[0];
+        this.battleStory += `<strong>${this.opponentCharacter.name}</strong> attacks <strong>${this.playerCharacter.name}</strong> with <em>${opponentMove.name}</em>. `;
+        this.battleStory += `${opponentMove.damage} point of damage. </br>`;
+        this.playerCharacter.HP -= opponentMove.damage;
+        if (this.playerCharacter.HP <= 0) {
+          this.playerCharacter.HP = 0;
+          this.battleStory += '<strong>Player lost</strong>!!! </br>'
+          this.battleEnded = true;
+        }
+      } 
     }
   }
   
@@ -56,4 +90,14 @@ export default {
 </script>
 
 <style scoped>
+.board {
+  width: 40%;
+  display: inline-block;
+}
+
+.scroll {
+  border: 1px solid;
+  height: 150px;
+  overflow-y: auto;
+}
 </style>
