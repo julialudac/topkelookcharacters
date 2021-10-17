@@ -10,6 +10,10 @@
         </select>
         <button @click="attacks">Confirm</button>
       </div>
+      <div v-show="battleEnded">
+        <img v-if="win" src="../../assets/battle/youWin.jpg" alt="winimage">
+        <img v-else src="../../assets/battle/youLost.jpg" alt="lostimage">
+      </div>
       <!-- Battle Story -->
       <div class='scroll' v-html="battleStory">
       </div>
@@ -40,7 +44,8 @@ export default {
       opponentCurrent: {},
       battleStory: "",
       chosenMoveName: this.playerCharacter.moves[0].name,
-      battleEnded: false
+      battleEnded: false,
+      win: false
     }
   },
   methods: {
@@ -52,6 +57,7 @@ export default {
         defender.HP = 0;
         if (attackerIsPlayer) {
           this.battleStory += '<strong>Player won</strong>!!! </br>'
+          this.win = true;
         } else {
           this.battleStory += '<strong>Player lost</strong>!!! </br>'
         }

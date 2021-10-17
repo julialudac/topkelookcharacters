@@ -4,7 +4,7 @@
       <router-link to='/play'>Play!</router-link>
     </header>
     <h1>Topkelook characters</h1>
-    <SearchBar @change="updateSearchCriterion"/>
+    <SearchBar @changedCriterion="updateSearchCriterion"/>
     <router-link v-for="(character, index) of characters" :key="index" :to="`/character/${character.name}`" v-show="match(searchCriterion, character.name)">
       <card :character="character"/>
     </router-link>

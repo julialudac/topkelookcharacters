@@ -14,7 +14,7 @@ export default {
   },
   watch: {
     criterion: function(newVal) {
-      this.$emit("change", newVal);
+      this.$emit("changedCriterion", newVal);
     }
   }
 }
